@@ -1,0 +1,219 @@
+:root {
+  color-scheme: light;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#puppy {
+  position: absolute;
+  left: 0;
+  bottom: 18px;
+  width: 140px;
+  height: 108px;
+  cursor: grab;
+  will-change: transform;
+}
+
+#puppy-flip {
+  width: 100%;
+  height: 100%;
+}
+
+#puppy-flip.facing-left {
+  transform: scaleX(-1);
+}
+
+#puppy svg {
+  display: block;
+  filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.25));
+}
+
+/* ---- size variants ---- */
+#puppy.size-small { width: 96px; height: 74px; }
+#puppy.size-small svg { width: 96px; height: 74px; }
+#puppy.size-medium { width: 140px; height: 108px; }
+#puppy.size-medium svg { width: 140px; height: 108px; }
+#puppy.size-large { width: 190px; height: 147px; }
+#puppy.size-large svg { width: 190px; height: 147px; }
+
+/* ---- blinking ---- */
+.eyes {
+  transform-origin: 105px 56px;
+  animation: blink 4.6s infinite;
+}
+
+@keyframes blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  94% { transform: scaleY(0.1); }
+  96% { transform: scaleY(1); }
+}
+
+/* ---- tail wag ---- */
+.tail {
+  transform-origin: 178px 108px;
+  animation: wag 0.55s ease-in-out infinite;
+}
+
+@keyframes wag {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(14deg); }
+}
+
+.state-sleep .tail,
+.state-drag .tail {
+  animation-play-state: paused;
+  transform: rotate(4deg);
+}
+
+/* ---- idle breathing ---- */
+.state-idle .head {
+  animation: breathe 2.6s ease-in-out infinite;
+  transform-origin: 105px 90px;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-1.5px) scale(1.01); }
+}
+
+/* ---- walking gait ---- */
+.state-walk .front-leg,
+.state-walk .back-leg {
+  animation-duration: 0.42s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.state-walk #leg-fl { animation-name: stepA; transform-origin: 74px 124px; }
+.state-walk #leg-br { animation-name: stepA; transform-origin: 148px 118px; }
+.state-walk #leg-fr { animation-name: stepB; transform-origin: 140px 124px; }
+.state-walk #leg-bl { animation-name: stepB; transform-origin: 80px 118px; }
+
+@keyframes stepA {
+  0%, 100% { transform: rotate(-16deg); }
+  50% { transform: rotate(16deg); }
+}
+@keyframes stepB {
+  0%, 100% { transform: rotate(16deg); }
+  50% { transform: rotate(-16deg); }
+}
+
+.state-walk #puppy-svg,
+.state-idle #puppy-svg {
+  animation: bob 0.42s ease-in-out infinite;
+}
+.state-idle #puppy-svg {
+  animation-duration: 2.6s;
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* ---- sleep state ---- */
+.state-sleep #puppy-svg {
+  transform: rotate(0deg) translateY(4px) scaleY(0.86);
+  animation: none;
+}
+.state-sleep .eyes {
+  animation: none;
+  transform: scaleY(0.12);
+}
+.state-sleep .front-leg,
+.state-sleep .back-leg {
+  animation: none;
+}
+
+.zzz {
+  position: absolute;
+  right: -6px;
+  top: -6px;
+  font-family: 'Comic Sans MS', 'Baloo 2', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #6b5a46;
+  opacity: 0;
+  pointer-events: none;
+}
+.state-sleep .zzz {
+  opacity: 1;
+  animation: floatUp 2.8s ease-in infinite;
+}
+.zzz span {
+  display: inline-block;
+  animation: inherit;
+}
+.zzz span:nth-child(2) { animation-delay: 0.4s; font-size: 11px; }
+.zzz span:nth-child(3) { animation-delay: 0.8s; font-size: 9px; }
+
+@keyframes floatUp {
+  0% { transform: translateY(4px); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: translateY(-22px); opacity: 0; }
+}
+
+/* ---- drag / pickup ---- */
+.state-drag {
+  cursor: grabbing;
+}
+.state-drag #puppy-svg {
+  animation: none;
+  transform: rotate(-4deg);
+}
+.state-drag .front-leg,
+.state-drag .back-leg {
+  animation: dangle 0.6s ease-in-out infinite;
+}
+@keyframes dangle {
+  0%, 100% { transform: rotate(4deg); }
+  50% { transform: rotate(-4deg); }
+}
+
+/* ---- pet / happy bounce ---- */
+.state-pet #puppy-svg {
+  animation: happyBounce 0.5s ease-in-out;
+}
+@keyframes happyBounce {
+  0% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(-14px) scale(1.05, 0.95); }
+  55% { transform: translateY(0) scale(0.95, 1.05); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* ---- heart particles ---- */
+#hearts {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.heart {
+  position: absolute;
+  font-size: 16px;
+  opacity: 0.95;
+  animation: heartFloat 1.1s ease-out forwards;
+}
+@keyframes heartFloat {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(var(--drift, 12px), -70px) scale(1.1); opacity: 0; }
+}

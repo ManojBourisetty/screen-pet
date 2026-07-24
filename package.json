@@ -1,0 +1,27 @@
+{
+  "name": "screen-pet",
+  "version": "0.1.0",
+  "description": "A fluffy puppy that lives on your desktop",
+  "main": "src/main/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist:mac": "electron-builder --mac"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.manojbourisetty.screenpet",
+    "productName": "Screen Pet",
+    "files": [
+      "src/**/*",
+      "assets/**/*"
+    ],
+    "mac": {
+      "category": "public.app-category.entertainment",
+      "target": "dmg"
+    }
+  }
+}
