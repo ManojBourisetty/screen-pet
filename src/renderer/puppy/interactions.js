@@ -78,7 +78,7 @@ export function setupInteractions({ puppyEl, hitTestEl, heartsEl, behavior }) {
   }
 
   function triggerPet(event) {
-    puppyEl.classList.add('state-pet');
+    behavior.triggerPetBounce();
     playHappyChirp();
     const rect = puppyEl.getBoundingClientRect();
     const originX = (event.clientX ?? rect.left + rect.width / 2) - rect.left;
@@ -86,7 +86,6 @@ export function setupInteractions({ puppyEl, hitTestEl, heartsEl, behavior }) {
     for (let i = 0; i < 4; i += 1) {
       setTimeout(() => spawnHeart(heartsEl, originX + (Math.random() - 0.5) * 20, originY), i * 90);
     }
-    setTimeout(() => puppyEl.classList.remove('state-pet'), 520);
   }
 
   document.addEventListener('mousemove', onPointerMove);

@@ -13,22 +13,18 @@ const GROUND_BAND_RATIO = 0.32;
 const EAT_DURATION_MS = 4200;
 const GRAB_DURATION_MS = 500;
 
-const STATE_CLASSES = [
-  'state-idle', 'state-walk', 'state-run', 'state-sleep',
-  'state-behave', 'state-eat', 'state-play', 'state-drag',
-];
-
 function randomBetween(min, max) {
   return min + Math.random() * (max - min);
 }
 
 export class PuppyBehavior {
-  constructor({ puppyEl, flipEl, toyEl, leashEl, bounds }) {
+  constructor({ puppyEl, puppyView, toyEl, leashEl, bounds }) {
     this.puppyEl = puppyEl;
+    this.puppyView = puppyView;
     this.toyEl = toyEl;
     this.leashEl = leashEl;
     this.bounds = bounds;
-    this.motion = new PuppyMotion(puppyEl, flipEl, bounds);
+    this.motion = new PuppyMotion(puppyEl, bounds);
     this.mode = 'auto';
     this.phase = 'roam-idle';
     this.cursor = { x: bounds.width / 2, y: bounds.height / 2 };
@@ -54,12 +50,16 @@ export class PuppyBehavior {
   }
 
   setState(name) {
-    this.puppyEl.classList.remove(...STATE_CLASSES);
-    this.puppyEl.classList.add(`state-${name}`);
+    this.puppyView.setState(name);
+    this.puppyEl.classList.toggle('is-sleeping', name === 'sleep');
   }
 
   faceToward(target) {
-    this.motion.setFacing(target.x >= this.motion.x ? 'right' : 'left');
+    this.puppyView.setFacing(target.x >= this.motion.x ? 'right' : 'left');
+  }
+
+  triggerPetBounce() {
+    this.puppyView.triggerPetBounce();
   }
 
   pickRoamTarget(upperScreen) {
@@ -147,12 +147,14 @@ export class PuppyBehavior {
 
   // ---- per-frame update ----
   tick(dt) {
-    if (this.mode === 'drag') return;
-    if (this.mode === 'sleep') return this.tickSleep(dt);
-    if (this.mode === 'behave') return this.tickBehave(dt);
-    if (this.mode === 'eat') return this.tickEat(dt);
-    if (this.mode === 'play') return this.tickPlay(dt);
-    this.tickAuto(dt);
+    if (this.mode === 'sleep') this.tickSleep(dt);
+    else if (this.mode === 'behave') this.tickBehave(dt);
+    else if (this.mode === 'eat') this.tickEat(dt);
+    else if (this.mode === 'play') this.tickPlay(dt);
+    else if (this.mode !== 'drag') this.tickAuto(dt);
+    // mode === 'drag': position is driven externally via dragTo(); state was set by beginDrag()
+
+    this.puppyView.tick(dt);
   }
 
   tickSleep(dt) {

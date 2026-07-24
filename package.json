@@ -5,12 +5,14 @@
   "main": "src/main/main.js",
   "private": true,
   "scripts": {
-    "start": "electron .",
-    "dist:mac": "electron-builder --mac"
+    "build": "esbuild src/renderer/app.js --bundle --outfile=src/renderer/dist/bundle.js --format=iife --platform=browser",
+    "start": "npm run build && electron .",
+    "dist:mac": "npm run build && electron-builder --mac"
   },
   "devDependencies": {
-    "electron": "^33.2.1",
-    "electron-builder": "^25.1.8"
+    "electron": "^43.2.0",
+    "electron-builder": "^26.15.3",
+    "esbuild": "^0.28.1"
   },
   "build": {
     "appId": "com.manojbourisetty.screenpet",
@@ -23,5 +25,8 @@
       "category": "public.app-category.entertainment",
       "target": "dmg"
     }
+  },
+  "dependencies": {
+    "three": "^0.185.1"
   }
 }

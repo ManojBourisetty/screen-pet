@@ -34,6 +34,22 @@ html, body {
   z-index: 2;
 }
 
+#puppy.state-drag {
+  cursor: grabbing;
+}
+
+#puppy-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.28));
+}
+
+/* ---- size variants ---- */
+#puppy.size-small { width: 96px; height: 74px; }
+#puppy.size-medium { width: 140px; height: 108px; }
+#puppy.size-large { width: 190px; height: 147px; }
+
 /* ---- fixtures: house, bowl, leash, toy ---- */
 #house,
 #bowl,
@@ -74,176 +90,7 @@ html, body {
   opacity: 1;
 }
 
-#puppy-flip {
-  width: 100%;
-  height: 100%;
-}
-
-#puppy-flip.facing-left {
-  transform: scaleX(-1);
-}
-
-#puppy svg {
-  display: block;
-  filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.25));
-}
-
-/* ---- size variants ---- */
-#puppy.size-small { width: 96px; height: 74px; }
-#puppy.size-small svg { width: 96px; height: 74px; }
-#puppy.size-medium { width: 140px; height: 108px; }
-#puppy.size-medium svg { width: 140px; height: 108px; }
-#puppy.size-large { width: 190px; height: 147px; }
-#puppy.size-large svg { width: 190px; height: 147px; }
-
-/* ---- blinking ---- */
-.eyes {
-  transform-origin: 105px 56px;
-  animation: blink 4.6s infinite;
-}
-
-@keyframes blink {
-  0%, 92%, 100% { transform: scaleY(1); }
-  94% { transform: scaleY(0.1); }
-  96% { transform: scaleY(1); }
-}
-
-/* ---- tail wag ---- */
-.tail {
-  transform-origin: 178px 108px;
-  animation: wag 0.55s ease-in-out infinite;
-}
-
-@keyframes wag {
-  0%, 100% { transform: rotate(-6deg); }
-  50% { transform: rotate(14deg); }
-}
-
-.state-sleep .tail,
-.state-drag .tail {
-  animation-play-state: paused;
-  transform: rotate(4deg);
-}
-
-/* ---- idle breathing ---- */
-.state-idle .head {
-  animation: breathe 2.6s ease-in-out infinite;
-  transform-origin: 105px 90px;
-}
-
-@keyframes breathe {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-1.5px) scale(1.01); }
-}
-
-/* ---- walking gait ---- */
-.state-walk .front-leg,
-.state-walk .back-leg {
-  animation-duration: 0.42s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-}
-
-.state-walk #leg-fl { animation-name: stepA; transform-origin: 74px 124px; }
-.state-walk #leg-br { animation-name: stepA; transform-origin: 148px 118px; }
-.state-walk #leg-fr { animation-name: stepB; transform-origin: 140px 124px; }
-.state-walk #leg-bl { animation-name: stepB; transform-origin: 80px 118px; }
-
-@keyframes stepA {
-  0%, 100% { transform: rotate(-16deg); }
-  50% { transform: rotate(16deg); }
-}
-@keyframes stepB {
-  0%, 100% { transform: rotate(16deg); }
-  50% { transform: rotate(-16deg); }
-}
-
-.state-walk #puppy-svg,
-.state-idle #puppy-svg {
-  animation: bob 0.42s ease-in-out infinite;
-}
-.state-idle #puppy-svg {
-  animation-duration: 2.6s;
-}
-
-@keyframes bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
-}
-
-/* ---- running gait (cursor-chase, fetch) ---- */
-.state-run .front-leg,
-.state-run .back-leg {
-  animation-duration: 0.22s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-}
-.state-run #leg-fl { animation-name: stepA; transform-origin: 74px 124px; }
-.state-run #leg-br { animation-name: stepA; transform-origin: 148px 118px; }
-.state-run #leg-fr { animation-name: stepB; transform-origin: 140px 124px; }
-.state-run #leg-bl { animation-name: stepB; transform-origin: 80px 118px; }
-
-.state-run #puppy-svg {
-  animation: runBob 0.22s ease-in-out infinite;
-}
-@keyframes runBob {
-  0%, 100% { transform: translateY(0) scale(1.03, 0.98); }
-  50% { transform: translateY(-6px) scale(0.98, 1.02); }
-}
-.state-run .tail {
-  animation-duration: 0.28s;
-}
-
-/* ---- behave: sitting near the house, on leash ---- */
-.state-behave .front-leg,
-.state-behave .back-leg {
-  animation: none;
-}
-.state-behave #puppy-svg {
-  animation: breathe 3s ease-in-out infinite;
-  transform-origin: 105px 90px;
-}
-.state-behave .tail {
-  animation-duration: 0.9s;
-}
-
-/* ---- eating: head-bob into the bowl ---- */
-.state-eat .front-leg,
-.state-eat .back-leg {
-  animation: none;
-}
-.state-eat .head {
-  animation: eatBob 0.5s ease-in-out infinite;
-  transform-origin: 105px 90px;
-}
-@keyframes eatBob {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(10px) rotate(8deg); }
-}
-
-/* ---- play: grabbing the toy ---- */
-.state-play #puppy-svg {
-  animation: wiggle 0.25s ease-in-out infinite;
-}
-@keyframes wiggle {
-  0%, 100% { transform: rotate(-6deg); }
-  50% { transform: rotate(6deg); }
-}
-
-/* ---- sleep state ---- */
-.state-sleep #puppy-svg {
-  transform: rotate(0deg) translateY(4px) scaleY(0.86);
-  animation: none;
-}
-.state-sleep .eyes {
-  animation: none;
-  transform: scaleY(0.12);
-}
-.state-sleep .front-leg,
-.state-sleep .back-leg {
-  animation: none;
-}
-
+/* ---- sleeping "Zzz" overlay (3D pose itself is driven in JS) ---- */
 .zzz {
   position: absolute;
   right: -6px;
@@ -255,7 +102,7 @@ html, body {
   opacity: 0;
   pointer-events: none;
 }
-.state-sleep .zzz {
+.is-sleeping .zzz {
   opacity: 1;
   animation: floatUp 2.8s ease-in infinite;
 }
@@ -270,34 +117,6 @@ html, body {
   0% { transform: translateY(4px); opacity: 0; }
   20% { opacity: 1; }
   100% { transform: translateY(-22px); opacity: 0; }
-}
-
-/* ---- drag / pickup ---- */
-.state-drag {
-  cursor: grabbing;
-}
-.state-drag #puppy-svg {
-  animation: none;
-  transform: rotate(-4deg);
-}
-.state-drag .front-leg,
-.state-drag .back-leg {
-  animation: dangle 0.6s ease-in-out infinite;
-}
-@keyframes dangle {
-  0%, 100% { transform: rotate(4deg); }
-  50% { transform: rotate(-4deg); }
-}
-
-/* ---- pet / happy bounce ---- */
-.state-pet #puppy-svg {
-  animation: happyBounce 0.5s ease-in-out;
-}
-@keyframes happyBounce {
-  0% { transform: translateY(0) scale(1); }
-  30% { transform: translateY(-14px) scale(1.05, 0.95); }
-  55% { transform: translateY(0) scale(0.95, 1.05); }
-  100% { transform: translateY(0) scale(1); }
 }
 
 /* ---- heart particles ---- */

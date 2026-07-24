@@ -3,9 +3,8 @@ const FOOTPRINT_H = 108;
 const EDGE_MARGIN = 12;
 
 export class PuppyMotion {
-  constructor(puppyEl, flipEl, bounds) {
+  constructor(puppyEl, bounds) {
     this.puppyEl = puppyEl;
-    this.flipEl = flipEl;
     this.bounds = bounds;
     this.x = bounds.width / 2;
     this.y = bounds.height - FOOTPRINT_H - 18;
@@ -64,10 +63,5 @@ export class PuppyMotion {
 
   applyPosition() {
     this.puppyEl.style.transform = `translate(${this.x}px, ${this.y}px)`;
-  }
-
-  setFacing(direction) {
-    this.flipEl.classList.toggle('facing-left', direction === 'left');
-    this.flipEl.classList.toggle('facing-right', direction === 'right');
   }
 }
