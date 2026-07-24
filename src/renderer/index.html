@@ -8,6 +8,43 @@
 </head>
 <body>
   <div id="stage">
+    <div id="house">
+      <svg viewBox="0 0 120 108" width="96" height="86">
+        <defs>
+          <filter id="house-fluffy" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.7" numOctaves="1" seed="3" result="n" />
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="2.5" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+        </defs>
+        <path d="M 10 104 L 10 54 L 60 14 L 110 54 L 110 104 Z" fill="#d9a05b" filter="url(#house-fluffy)" />
+        <path d="M 2 58 L 60 10 L 118 58 L 108 58 L 60 22 L 12 58 Z" fill="#8a4f2b" filter="url(#house-fluffy)" />
+        <path d="M 44 104 L 44 68 C 44 60, 76 60, 76 68 L 76 104 Z" fill="#4a2c1a" />
+      </svg>
+    </div>
+
+    <div id="bowl">
+      <svg viewBox="0 0 60 30" width="52" height="26">
+        <ellipse cx="30" cy="12" rx="28" ry="10" fill="#9aa0a6" />
+        <ellipse cx="30" cy="9" rx="24" ry="8" fill="#d7dade" />
+        <ellipse cx="30" cy="9" rx="17" ry="5.5" fill="#e8935c" />
+      </svg>
+    </div>
+
+    <div id="leash">
+      <svg viewBox="0 0 40 30" width="40" height="30">
+        <path d="M 2 2 C 12 10, 22 14, 38 16" stroke="#7a5230" stroke-width="3" fill="none" stroke-linecap="round" />
+        <circle cx="2" cy="2" r="4" fill="#5c3a1e" />
+      </svg>
+    </div>
+
+    <div id="toy">
+      <svg viewBox="0 0 30 30" width="24" height="24">
+        <circle cx="15" cy="15" r="13" fill="#5db8d1" />
+        <path d="M 4 15 A 11 11 0 0 1 26 15" stroke="#ffffff" stroke-width="2" fill="none" />
+        <path d="M 4 15 A 11 11 0 0 0 26 15" stroke="#ffffff" stroke-width="2" fill="none" />
+      </svg>
+    </div>
+
     <div id="puppy" class="state-idle">
       <div id="zzz" class="zzz">Z<span>z</span><span>z</span></div>
       <div id="puppy-flip" class="facing-right">

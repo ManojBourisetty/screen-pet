@@ -3,7 +3,8 @@ const path = require('path');
 
 let mainWindow = null;
 let tray = null;
-let paused = false;
+let sleeping = false;
+let behaving = false;
 
 function createWindow() {
   const primaryDisplay = screen.getPrimaryDisplay();
@@ -52,9 +53,44 @@ function createWindow() {
   });
 }
 
+function sendCommand(type) {
+  mainWindow?.webContents.send('pet:command', { type });
+}
+
+function setSize(size) {
+  mainWindow?.webContents.send('pet:size', size);
+}
+
+function runOneShot(type) {
+  sleeping = false;
+  behaving = false;
+  sendCommand(type);
+  rebuildTrayMenu();
+}
+
 function rebuildTrayMenu() {
   const menu = Menu.buildFromTemplate([
-    { label: paused ? 'Resume' : 'Pause', click: togglePause },
+    {
+      label: sleeping ? 'Wake up' : 'Sleep',
+      click: () => {
+        sleeping = !sleeping;
+        if (sleeping) behaving = false;
+        sendCommand('sleep-toggle');
+        rebuildTrayMenu();
+      },
+    },
+    {
+      label: behaving ? 'Let loose' : 'Behave',
+      click: () => {
+        behaving = !behaving;
+        if (behaving) sleeping = false;
+        sendCommand('behave-toggle');
+        rebuildTrayMenu();
+      },
+    },
+    { type: 'separator' },
+    { label: 'Feed', click: () => runOneShot('eat') },
+    { label: 'Play fetch', click: () => runOneShot('play') },
     { type: 'separator' },
     {
       label: 'Size',
@@ -70,16 +106,6 @@ function rebuildTrayMenu() {
   tray.setContextMenu(menu);
 }
 
-function togglePause() {
-  paused = !paused;
-  mainWindow?.webContents.send('pet:paused', paused);
-  rebuildTrayMenu();
-}
-
-function setSize(size) {
-  mainWindow?.webContents.send('pet:size', size);
-}
-
 function createTray() {
   tray = new Tray(nativeImage.createEmpty());
   tray.setTitle('🐶');
@@ -89,6 +115,13 @@ function createTray() {
 
 ipcMain.on('pet:set-ignore-mouse-events', (_event, ignore, options) => {
   mainWindow?.setIgnoreMouseEvents(ignore, options);
+});
+
+ipcMain.on('pet:state-sync', (_event, state) => {
+  if (state.sleeping === sleeping && state.behaving === behaving) return;
+  sleeping = state.sleeping;
+  behaving = state.behaving;
+  rebuildTrayMenu();
 });
 
 app.whenReady().then(() => {

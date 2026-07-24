@@ -14,10 +14,11 @@ function spawnHeart(container, originX, originY) {
   heart.addEventListener('animationend', () => heart.remove());
 }
 
-export function setupInteractions({ puppyEl, hitTestEl, heartsEl, movement }) {
+export function setupInteractions({ puppyEl, hitTestEl, heartsEl, behavior }) {
   let dragging = false;
   let dragMoved = false;
   let dragOffsetX = 0;
+  let dragOffsetY = 0;
   let dragStartX = 0;
   let dragStartY = 0;
   let hoverIgnoring = true;
@@ -45,11 +46,10 @@ export function setupInteractions({ puppyEl, hitTestEl, heartsEl, movement }) {
     dragMoved = false;
     dragStartX = event.clientX;
     dragStartY = event.clientY;
-    movement.suspend();
     const rect = puppyEl.getBoundingClientRect();
     dragOffsetX = event.clientX - rect.left;
-    puppyEl.classList.remove('state-idle', 'state-walk', 'state-sleep', 'state-pet');
-    puppyEl.classList.add('state-drag');
+    dragOffsetY = event.clientY - rect.top;
+    behavior.beginDrag();
     event.preventDefault();
   }
 
@@ -62,20 +62,19 @@ export function setupInteractions({ puppyEl, hitTestEl, heartsEl, movement }) {
     if (traveled > DRAG_THRESHOLD_PX) {
       dragMoved = true;
     }
-    movement.setPositionFromScreenX(event.clientX - dragOffsetX + 70);
+    behavior.dragTo(event.clientX - dragOffsetX, event.clientY - dragOffsetY);
   }
 
   function onPointerUp(event) {
     if (!dragging) return;
     dragging = false;
-    puppyEl.classList.remove('state-drag');
 
     if (!dragMoved) {
       triggerPet(event);
     } else {
       playYip();
     }
-    movement.resume();
+    behavior.endDrag();
   }
 
   function triggerPet(event) {

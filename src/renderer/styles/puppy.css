@@ -26,11 +26,52 @@ html, body {
 #puppy {
   position: absolute;
   left: 0;
-  bottom: 18px;
+  top: 0;
   width: 140px;
   height: 108px;
   cursor: grab;
   will-change: transform;
+  z-index: 2;
+}
+
+/* ---- fixtures: house, bowl, leash, toy ---- */
+#house,
+#bowl,
+#leash,
+#toy {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+}
+
+#house {
+  left: 28px;
+  bottom: 18px;
+}
+
+#bowl {
+  left: 152px;
+  bottom: 18px;
+}
+
+#leash {
+  left: 118px;
+  bottom: 22px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+#leash.visible {
+  opacity: 1;
+}
+
+#toy {
+  left: 0;
+  top: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+#toy.visible {
+  opacity: 1;
 }
 
 #puppy-flip {
@@ -128,6 +169,65 @@ html, body {
 @keyframes bob {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-3px); }
+}
+
+/* ---- running gait (cursor-chase, fetch) ---- */
+.state-run .front-leg,
+.state-run .back-leg {
+  animation-duration: 0.22s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+.state-run #leg-fl { animation-name: stepA; transform-origin: 74px 124px; }
+.state-run #leg-br { animation-name: stepA; transform-origin: 148px 118px; }
+.state-run #leg-fr { animation-name: stepB; transform-origin: 140px 124px; }
+.state-run #leg-bl { animation-name: stepB; transform-origin: 80px 118px; }
+
+.state-run #puppy-svg {
+  animation: runBob 0.22s ease-in-out infinite;
+}
+@keyframes runBob {
+  0%, 100% { transform: translateY(0) scale(1.03, 0.98); }
+  50% { transform: translateY(-6px) scale(0.98, 1.02); }
+}
+.state-run .tail {
+  animation-duration: 0.28s;
+}
+
+/* ---- behave: sitting near the house, on leash ---- */
+.state-behave .front-leg,
+.state-behave .back-leg {
+  animation: none;
+}
+.state-behave #puppy-svg {
+  animation: breathe 3s ease-in-out infinite;
+  transform-origin: 105px 90px;
+}
+.state-behave .tail {
+  animation-duration: 0.9s;
+}
+
+/* ---- eating: head-bob into the bowl ---- */
+.state-eat .front-leg,
+.state-eat .back-leg {
+  animation: none;
+}
+.state-eat .head {
+  animation: eatBob 0.5s ease-in-out infinite;
+  transform-origin: 105px 90px;
+}
+@keyframes eatBob {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(10px) rotate(8deg); }
+}
+
+/* ---- play: grabbing the toy ---- */
+.state-play #puppy-svg {
+  animation: wiggle 0.25s ease-in-out infinite;
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-6deg); }
+  50% { transform: rotate(6deg); }
 }
 
 /* ---- sleep state ---- */
